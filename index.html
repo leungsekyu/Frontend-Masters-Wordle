@@ -2,92 +2,99 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wordle</title>
 
-    <link rel="shortcut icon" href="#">
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./styles.css" />
 </head>
 
 <body>
-    <div class="container">
-        <header>Wordle</header>
-        <div class="row" id="row1">
-            <input type="text" id='1a' maxlength="1" autocomplete="off">
-            <input type="text" id='1b' maxlength="1" autocomplete="off">
-            <input type="text" id='1c' maxlength="1" autocomplete="off">
-            <input type="text" id='1d' maxlength="1" autocomplete="off">
-            <input type="text" id='1e' maxlength="1" autocomplete="off">
-        </div>
-        <div class="row" id="row2">
-            <input type="text" id='2a' maxlength="1" autocomplete="off">
-            <input type="text" id='2b' maxlength="1" autocomplete="off">
-            <input type="text" id='2c' maxlength="1" autocomplete="off">
-            <input type="text" id='2d' maxlength="1" autocomplete="off">
-            <input type="text" id='2e' maxlength="1" autocomplete="off">
-        </div>
-        <div class="row" id="row3">
-            <input type="text" id='3a' maxlength="1" autocomplete="off">
-            <input type="text" id='3b' maxlength="1" autocomplete="off">
-            <input type="text" id='3c' maxlength="1" autocomplete="off">
-            <input type="text" id='3d' maxlength="1" autocomplete="off">
-            <input type="text" id='3e' maxlength="1" autocomplete="off">
-        </div>
-        <div class="row" id="row4">
-            <input type="text" id='4a' maxlength="1" autocomplete="off">
-            <input type="text" id='4b' maxlength="1" autocomplete="off">
-            <input type="text" id='4c' maxlength="1" autocomplete="off">
-            <input type="text" id='4d' maxlength="1" autocomplete="off">
-            <input type="text" id='4e' maxlength="1" autocomplete="off">
-        </div>
-        <div class="row" id="row5">
-            <input type="text" id='5a' maxlength="1" autocomplete="off">
-            <input type="text" id='5b' maxlength="1" autocomplete="off">
-            <input type="text" id='5c' maxlength="1" autocomplete="off">
-            <input type="text" id='5d' maxlength="1" autocomplete="off">
-            <input type="text" id='5e' maxlength="1" autocomplete="off">
-        </div>
-        <div class="row" id="row6">
-            <input type="text" id='6a' maxlength="1" autocomplete="off">
-            <input type="text" id='6b' maxlength="1" autocomplete="off">
-            <input type="text" id='6c' maxlength="1" autocomplete="off">
-            <input type="text" id='6d' maxlength="1" autocomplete="off">
-            <input type="text" id='6e' maxlength="1" autocomplete="off">
+    <div class="page-upper">
+        <div class="game">
+            <header>Wordle</header>
+            <div class="line" id="line1">
+                <div class="letter" id="1a"></div>
+                <div class="letter" id="1b"></div>
+                <div class="letter" id="1c"></div>
+                <div class="letter" id="1d"></div>
+                <div class="letter" id="1e"></div>
+            </div>
+            <div class="line" id="line2">
+                <div class="letter" id="2a"></div>
+                <div class="letter" id="2b"></div>
+                <div class="letter" id="2c"></div>
+                <div class="letter" id="2d"></div>
+                <div class="letter" id="2e"></div>
+            </div>
+            <div class="line" id="line3">
+                <div class="letter" id="3a"></div>
+                <div class="letter" id="3b"></div>
+                <div class="letter" id="3c"></div>
+                <div class="letter" id="3d"></div>
+                <div class="letter" id="3e"></div>
+            </div>
+            <div class="line" id="line4">
+                <div class="letter" id="4a"></div>
+                <div class="letter" id="4b"></div>
+                <div class="letter" id="4c"></div>
+                <div class="letter" id="4d"></div>
+                <div class="letter" id="4e"></div>
+            </div>
+            <div class="line" id="line5">
+                <div class="letter" id="5a"></div>
+                <div class="letter" id="5b"></div>
+                <div class="letter" id="5c"></div>
+                <div class="letter" id="5d"></div>
+                <div class="letter" id="5e"></div>
+            </div>
+            <div class="line" id="line6">
+                <div class="letter" id="6a"></div>
+                <div class="letter" id="6b"></div>
+                <div class="letter" id="6c"></div>
+                <div class="letter" id="6d"></div>
+                <div class="letter" id="6e"></div>
+            </div>
         </div>
     </div>
 
-    <div class="alphabet">
-        <div class="alp-row">
-            <div id="a">A</div>
-            <div id="b">B</div>
-            <div id="c">C</div>
-            <div id="d">D</div>
-            <div id="e">E</div>
-            <div id="f">F</div>
-            <div id="g">G</div>
-            <div id="h">H</div>
-            <div id="i">I</div>
-            <div id="j">J</div>
-            <div id="k">K</div>
-            <div id="l">L</div>
-            <div id="m">M</div>
-        </div>
-        <div class="alp-row">
-            <div id="n">N</div>
-            <div id="o">O</div>
-            <div id="p">P</div>
-            <div id="q">Q</div>
-            <div id="r">R</div>
-            <div id="s">S</div>
-            <div id="t">T</div>
-            <div id="u">U</div>
-            <div id="v">V</div>
-            <div id="w">W</div>
-            <div id="x">X</div>
-            <div id="y">Y</div>
-            <div id="z">Z</div>
+    <div class="page-lower">
+        <div class="keyboard">
+            <div class="keyboard-line" id="keyboard-line1">
+                <button id="q">Q</button>
+                <button id="w">W</button>
+                <button id="e">E</button>
+                <button id="r">R</button>
+                <button id="t">T</button>
+                <button id="y">Y</button>
+                <button id="u">U</button>
+                <button id="i">I</button>
+                <button id="o">O</button>
+                <button id="p">P</button>
+            </div>
+            <div class="keyboard-line" id="keyboard-line2">
+                <button id="a">A</button>
+                <button id="s">S</button>
+                <button id="d">D</button>
+                <button id="f">F</button>
+                <button id="g">G</button>
+                <button id="h">H</button>
+                <button id="j">J</button>
+                <button id="k">K</button>
+                <button id="l">L</button>
+            </div>
+            <div class="keyboard-line">
+                <button class="large backspace">←</button>
+                <button id="z">Z</button>
+                <button id="x">X</button>
+                <button id="c">C</button>
+                <button id="v">V</button>
+                <button id="b">B</button>
+                <button id="n">N</button>
+                <button id="m">M</button>
+                <button class="large enter">Enter</button>
+            </div>
         </div>
     </div>
 
