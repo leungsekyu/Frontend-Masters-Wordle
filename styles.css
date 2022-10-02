@@ -19,7 +19,7 @@ body {
   display: grid;
   justify-content: center;
   align-items: center;
-  height: 15vh;
+  height: 30vh;
 }
 
 .game {
