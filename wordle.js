@@ -49,6 +49,11 @@ function solveClick(event) {
   }
 }
 
+function removeEventListeners() {
+  document.removeEventListener('keydown', solveKeydown);
+  keyboard.removeEventListener('click', solveClick);
+}
+
 // event handler assistant functions
 function solveLetter(currLetter, keyVal) {
   if (currLetter.innerText === '') {
@@ -103,8 +108,7 @@ async function validateCurrLine(currLine) {
     if (currWord == ref) {
       isWin = true;
       solveWin();
-      document.removeEventListener('keydown', solveKeydown);
-      keyboard.removeEventListener('click', solveClick);
+      removeEventListeners();
     }
     if (!isWin) {
       moveToNextLine();
@@ -124,8 +128,7 @@ function moveToNextLine() {
     wordInx = 0;
   } else {
     solveLose();
-    document.removeEventListener('keydown', solveKeydown);
-    keyboard.removeEventListener('click', solveClick);
+    removeEventListeners();
   }
 }
 
