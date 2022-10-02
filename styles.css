@@ -12,14 +12,14 @@ body {
   display: grid;
   justify-content: center;
   align-items: center;
-  height: 75vh;
+  height: 70vh;
 }
 
 .page-lower {
   display: grid;
   justify-content: center;
   align-items: center;
-  height: 25vh;
+  height: 30vh;
 }
 
 .game {
