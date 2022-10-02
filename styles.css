@@ -157,3 +157,23 @@ button {
 .enter {
   font-size: 15px;
 }
+
+@media screen and (max-width: 768px) {
+  header {
+    font-size: 45px;
+  }
+
+  .letter {
+    width: 45px;
+    height: 45px;
+    line-height: 45px;
+    border-radius: 8px;
+    font-size: 35px;
+  }
+
+  button {
+    width: 25px;
+    height: 25px;
+    font-size: 15px;
+  }
+}
