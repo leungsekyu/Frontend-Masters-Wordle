@@ -29,7 +29,8 @@ body {
 
 header {
   display: grid;
-  font-family: monospace;
+  /* font-family: monospace; */
+  font-family: 'Pacifico', cursive;
   font-size: 50px;
   text-align: center;
   margin: 10px 0;
