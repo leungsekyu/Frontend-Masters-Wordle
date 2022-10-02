@@ -103,6 +103,8 @@ async function validateCurrLine(currLine) {
     if (currWord == ref) {
       isWin = true;
       solveWin();
+      document.removeEventListener('keydown', solveKeydown);
+      keyboard.removeEventListener('click', solveClick);
     }
     if (!isWin) {
       moveToNextLine();
@@ -122,6 +124,8 @@ function moveToNextLine() {
     wordInx = 0;
   } else {
     solveLose();
+    document.removeEventListener('keydown', solveKeydown);
+    keyboard.removeEventListener('click', solveClick);
   }
 }
 
