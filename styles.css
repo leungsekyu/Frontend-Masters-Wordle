@@ -158,7 +158,8 @@ button {
   font-size: 15px;
 }
 
-@media screen and (max-width: 768px) {
+/* not the screen width */
+@media (max-width: 400px) {
   header {
     font-size: 45px;
   }
