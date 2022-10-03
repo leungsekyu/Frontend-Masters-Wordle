@@ -31,9 +31,11 @@ body {
 
 header {
   display: grid;
+  align-items: center;
+  justify-content: center;
+  height: 88.5px;
   font-family: 'Pacifico', monospace;
   font-size: 50px;
-  text-align: center;
   margin: 10px 0;
 }
 
@@ -79,6 +81,10 @@ header {
 .exact {
   background-color: #6aaa64;
   border-color: #6aaa64;
+}
+
+.win {
+  font-family: monospace;
 }
 
 .answer {
@@ -165,6 +171,7 @@ button {
 /* the max-width 0f 'keyboard' section */
 @media (max-width: 400px) {
   header {
+    height: 79.5px;
     font-size: 45px;
   }
 

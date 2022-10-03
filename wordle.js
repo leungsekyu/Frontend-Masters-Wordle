@@ -276,5 +276,5 @@ function solveWin() {
 }
 
 function solveLose() {
-  header.innerHTML = `<span>'<span class='answer'>${ref.toUpperCase()}</span>'</span>`;
+  header.innerHTML = `<span class='win'>'<span class='answer'>${ref.toUpperCase()}</span>'</span>`;
 }
