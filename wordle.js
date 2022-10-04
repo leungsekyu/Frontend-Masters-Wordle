@@ -1,12 +1,13 @@
 let header = document.querySelector('header');
 let currLine = document.querySelectorAll('.line')[0];
+let currLetters = Array.from(currLine.children);
 let keyboard = document.querySelector('.keyboard');
 
-let lineQty = 6;
-let lineInx = 0;
+const LINE_QUANTITY = 6;
+let lineIdx = 0;
 
-let wordLength = 5;
-let wordInx = 0;
+const WORD_LENGTH = 5;
+let currWord = '';
 
 let ref = '';
 let fetchWordURL = 'https://words.dev-apis.com/word-of-the-day';
@@ -24,28 +25,14 @@ async function init() {
 
 /* event handler */
 function solveKeydown(event) {
-  let currLetter = currLine.children[wordInx];
   let keyVal = event.key;
-  if (isLetter(keyVal)) {
-    solveLetter(currLetter, keyVal);
-  } else if (keyVal === 'Backspace') {
-    solveBackspace(currLetter);
-  } else if (keyVal === 'Enter') {
-    solveEnter(currLetter);
-  }
+  solveKey(keyVal);
 }
 
 function solveClick(event) {
   if (event.target.tagName === 'BUTTON') {
-    let currLetter = currLine.children[wordInx];
     let keyVal = event.target.innerText;
-    if (isLetter(keyVal)) {
-      solveLetter(currLetter, keyVal);
-    } else if (keyVal === '←') {
-      solveBackspace(currLetter);
-    } else if (keyVal === 'Enter') {
-      solveEnter(currLetter);
-    }
+    solveKey(keyVal);
   }
 }
 
@@ -55,57 +42,48 @@ function removeEventListeners() {
 }
 
 // event handler assistant functions
-function solveLetter(currLetter, keyVal) {
-  if (currLetter.innerText === '') {
+function solveKey(keyVal) {
+  if (isLetter(keyVal)) {
+    solveLetter(keyVal);
+  } else if (keyVal === 'Backspace' || keyVal === '←') {
+    solveBackspace();
+  } else if (keyVal === 'Enter') {
+    solveEnter();
+  }
+}
+
+function solveLetter(keyVal) {
+  if (currWord.length < WORD_LENGTH) {
+    let currLetter = currLetters[currWord.length];
     currLetter.innerText = keyVal;
     currLetter.classList.add('disabled');
-    if (wordInx < wordLength - 1) {
-      wordInx++;
-    }
-  } else {
-    if (wordInx < wordLength - 1) {
-      wordInx++;
-      currLetter = currLine.children[wordInx];
-      currLetter.innerText = keyVal;
-      currLetter.classList.add('disabled');
-    }
+    currWord += keyVal;
   }
 }
 
-function solveBackspace(currLetter) {
-  if (currLetter.innerText !== '') {
+function solveBackspace() {
+  if (currWord.length > 0) {
+    let currLetter = currLetters[currWord.length - 1];
     currLetter.innerText = '';
     currLetter.classList.remove('disabled');
-    if (wordInx > 0) {
-      wordInx--;
-    }
-  } else {
-    if (wordInx > 0) {
-      wordInx--;
-    }
-    currLetter = currLine.children[wordInx];
-    currLetter.innerText = '';
-    currLetter.classList.remove('disabled');
+    currWord = currWord.substring(0, currWord.length - 1);
   }
 }
 
-async function solveEnter(currLetter) {
-  if (wordInx === wordLength - 1) {
-    if (currLetter.innerText !== '') {
-      await validateCurrLine(currLine);
-    }
+async function solveEnter() {
+  if (currWord.length === WORD_LENGTH) {
+    await validateCurrLine();
   }
 }
 
 /* validation */
-async function validateCurrLine(currLine) {
-  let currWord = getCurrWord(currLine);
-  fireSpinner(currLine);
-  let isValid = await validateCurrWord(currWord);
-  stopSpinner(currLine);
+async function validateCurrLine() {
+  fireSpinner();
+  let isValid = await validateCurrWord();
+  stopSpinner();
   if (isValid) {
-    renderCurrLine(currLine, currWord);
-    if (currWord == ref) {
+    renderCurrLine();
+    if (currWord === ref) {
       isWin = true;
       solveWin();
       removeEventListeners();
@@ -114,18 +92,19 @@ async function validateCurrLine(currLine) {
       moveToNextLine();
     }
   } else {
-    fireShaker(currLine);
+    fireShaker();
     setTimeout(() => {
-      stopShaker(currLine);
+      stopShaker();
     }, 1000);
   }
 }
 
 function moveToNextLine() {
-  if (lineInx < lineQty - 1) {
-    lineInx++;
-    currLine = document.querySelectorAll('.line')[lineInx];
-    wordInx = 0;
+  if (lineIdx < LINE_QUANTITY - 1) {
+    lineIdx++;
+    currLine = document.querySelectorAll('.line')[lineIdx];
+    currLetters = Array.from(currLine.children);
+    currWord = '';
   } else {
     solveLose();
     removeEventListeners();
@@ -144,14 +123,7 @@ async function fetchWord() {
   return word;
 }
 
-function getCurrWord(currLine) {
-  let currLetters = Array.from(currLine.children);
-  let currWord = '';
-  currLetters.forEach((currLetter) => (currWord += currLetter.innerText));
-  return currWord.toLowerCase();
-}
-
-async function validateCurrWord(currWord) {
+async function validateCurrWord() {
   let response = await fetch(validateWordURL, {
     method: 'POST',
     body: JSON.stringify({ word: currWord }),
@@ -179,52 +151,51 @@ function countWord(word) {
 }
 
 /* rendering */
-function renderCurrLine(currLine, word) {
-  let currLetters = Array.from(currLine.children);
+function renderCurrLine() {
   let refCounter = countWord(ref);
-  let wordCounter = countWord(word);
+  let currWordCounter = countWord(currWord);
 
-  Object.keys(wordCounter).forEach((currLetter) => {
+  Object.keys(currWordCounter).forEach((currLetter) => {
     if (currLetter in refCounter) {
-      solveExact(currLetter, currLetters, refCounter, wordCounter);
-      solveExist(currLetter, currLetters, refCounter, wordCounter);
+      solveExact(currLetter, refCounter, currWordCounter);
+      solveExist(currLetter, refCounter, currWordCounter);
     } else {
-      solveNonExist(currLetter, currLetters, wordCounter);
+      solveNonExist(currLetter, currWordCounter);
     }
   });
 }
 
-function solveExact(currLetter, currLetters, refCounter, wordCounter) {
-  wordCounter[currLetter].position.forEach((currPos) => {
+function solveExact(currLetter, refCounter, currWordCounter) {
+  currWordCounter[currLetter].position.forEach((currPos) => {
     if (refCounter[currLetter].position.includes(currPos)) {
-      wordCounter[currLetter].matched.push(currPos);
+      currWordCounter[currLetter].matched.push(currPos);
       currLetters[currPos].classList.add('exact');
-      let correspondBtn = document.getElementById(currLetter);
-      correspondBtn.classList.add('exact');
+      let correspBtn = document.getElementById(currLetter);
+      correspBtn.classList.add('exact');
     } else {
-      wordCounter[currLetter].mismatched.push(currPos);
+      currWordCounter[currLetter].mismatched.push(currPos);
     }
   });
 }
 
-function solveExist(currLetter, currLetters, refCounter, wordCounter) {
+function solveExist(currLetter, refCounter, currWordCounter) {
   let refQty = refCounter[currLetter].position.length;
-  let matchedQty = wordCounter[currLetter].matched.length;
-  let mismatchedQty = wordCounter[currLetter].mismatched.length;
+  let matchedQty = currWordCounter[currLetter].matched.length;
+  let mismatchedQty = currWordCounter[currLetter].mismatched.length;
   if (refQty - matchedQty === 0) {
-    wordCounter[currLetter].mismatched.forEach((currPos) => {
+    currWordCounter[currLetter].mismatched.forEach((currPos) => {
       currLetters[currPos].classList.add('non-exist');
     });
   }
   if (refQty - matchedQty >= mismatchedQty) {
     for (let i = 0; i < mismatchedQty; i++) {
-      let currPos = wordCounter[currLetter].mismatched[i];
+      let currPos = currWordCounter[currLetter].mismatched[i];
       currLetters[currPos].classList.add('exist');
     }
   }
   if (refQty - matchedQty < mismatchedQty) {
     for (let i = 0; i < mismatchedQty; i++) {
-      let currPos = wordCounter[currLetter].mismatched[i];
+      let currPos = currWordCounter[currLetter].mismatched[i];
       if (i < refQty - matchedQty) {
         currLetters[currPos].classList.add('exist');
       } else {
@@ -232,41 +203,39 @@ function solveExist(currLetter, currLetters, refCounter, wordCounter) {
       }
     }
   }
-  let correspondBtn = document.getElementById(currLetter);
-  if (!correspondBtn.classList.contains('exact')) {
-    correspondBtn.classList.add('exist');
+  let correspBtn = document.getElementById(currLetter);
+  if (!correspBtn.classList.contains('exact')) {
+    correspBtn.classList.add('exist');
   }
 }
 
-function solveNonExist(currLetter, currLetters, wordCounter) {
+function solveNonExist(currLetter, wordCounter) {
   wordCounter[currLetter].position.forEach((currPos) => {
     currLetters[currPos].classList.add('non-exist');
-    let correspondBtn = document.getElementById(currLetter);
-    correspondBtn.classList.add('non-exist');
+    let correspBtn = document.getElementById(currLetter);
+    correspBtn.classList.add('non-exist');
   });
 }
 
 /* animation */
 // spinner
-function fireSpinner(currLine) {
-  let currLetters = Array.from(currLine.children);
+function fireSpinner() {
   currLetters.forEach((currLetter) => {
     currLetter.classList.add('spin');
   });
 }
 
-function stopSpinner(currLine) {
-  let currLetters = Array.from(currLine.children);
+function stopSpinner() {
   currLetters.forEach((currLetter) => {
     currLetter.classList.remove('spin');
   });
 }
 
-function fireShaker(currLine) {
+function fireShaker() {
   currLine.classList.add('shake');
 }
 
-function stopShaker(currLine) {
+function stopShaker() {
   currLine.classList.remove('shake');
 }
 
