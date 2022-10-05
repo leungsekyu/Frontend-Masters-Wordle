@@ -1,4 +1,5 @@
 let header = document.querySelector('header');
+let loadingIndicator = document.querySelector('.loading-indicator');
 let currLine = document.querySelectorAll('.line')[0];
 let currLetters = Array.from(currLine.children);
 let keyboard = document.querySelector('.keyboard');
@@ -19,8 +20,10 @@ init();
 
 async function init() {
   ref = await fetchWord();
-  document.addEventListener('keydown', solveKeydown);
-  keyboard.addEventListener('click', solveClick);
+  if (ref !== undefined) {
+    document.addEventListener('keydown', solveKeydown);
+    keyboard.addEventListener('click', solveClick);
+  }
 }
 
 /* event handler */
@@ -44,7 +47,8 @@ function removeEventListeners() {
 // event handler assistant functions
 function solveKey(keyVal) {
   if (isLetter(keyVal)) {
-    solveLetter(keyVal);
+    // transform 'keyVal' to lower case is **very** important to validation afterwards
+    solveLetter(keyVal.toLowerCase());
   } else if (keyVal === 'Backspace' || keyVal === '←') {
     solveBackspace();
   } else if (keyVal === 'Enter') {
@@ -78,9 +82,9 @@ async function solveEnter() {
 
 /* validation */
 async function validateCurrLine() {
-  fireSpinner();
+  beforeValidatingCurrWord();
   let isValid = await validateCurrWord();
-  stopSpinner();
+  afterValidatingCurrWord();
   if (isValid) {
     renderCurrLine();
     if (currWord === ref) {
@@ -117,10 +121,38 @@ function isLetter(letter) {
 }
 
 async function fetchWord() {
-  let response = await fetch(fetchWordURL);
-  let responseJSON = await response.json();
-  let word = responseJSON.word;
-  return word;
+  try {
+    beforeFetchingWord();
+    let response = await fetch(fetchWordURL);
+    let responseJSON = await response.json();
+    afterFetchingWord();
+    let word = responseJSON.word;
+    console.log(word);
+    return word;
+  } catch (error) {
+    solveFetchWordError();
+  }
+}
+
+function solveFetchWordError() {
+  document.getElementById('1a').innerText = 'n';
+  document.getElementById('1b').innerText = 'e';
+  document.getElementById('1c').innerText = 't';
+  document.getElementById('1d').innerText = 'w';
+  document.getElementById('1e').innerText = 'o';
+  document.getElementById('2a').innerText = 'r';
+  document.getElementById('2b').innerText = 'k';
+  document.getElementById('3a').innerText = 'e';
+  document.getElementById('3b').innerText = 'r';
+  document.getElementById('3c').innerText = 'r';
+  document.getElementById('3d').innerText = 'o';
+  document.getElementById('3e').innerText = 'r';
+  document.getElementById('4a').innerText = '🥲';
+  document.getElementById('6e').innerText = '⟳';
+  document.getElementById('6e').classList.add('refresh');
+  document.getElementById('6e').addEventListener('click', function () {
+    location.reload();
+  });
 }
 
 async function validateCurrWord() {
@@ -213,22 +245,39 @@ function solveNonExist(currLetter, wordCounter) {
   wordCounter[currLetter].position.forEach((currPos) => {
     currLetters[currPos].classList.add('non-exist');
     let correspBtn = document.getElementById(currLetter);
+    console.log(correspBtn);
     correspBtn.classList.add('non-exist');
   });
 }
 
 /* animation */
 // spinner
-function fireSpinner() {
+function beforeValidatingCurrWord() {
   currLetters.forEach((currLetter) => {
-    currLetter.classList.add('spin');
+    addSpinner(currLetter);
   });
 }
 
-function stopSpinner() {
+function afterValidatingCurrWord() {
   currLetters.forEach((currLetter) => {
-    currLetter.classList.remove('spin');
+    removeSpinner(currLetter);
   });
+}
+
+function beforeFetchingWord() {
+  loadingIndicator.classList.add('bounce');
+}
+
+function afterFetchingWord() {
+  loadingIndicator.classList.remove('bounce');
+}
+
+function addSpinner(elem) {
+  elem.classList.add('spin');
+}
+
+function removeSpinner(elem) {
+  elem.classList.remove('spin');
 }
 
 function fireShaker() {
@@ -245,5 +294,6 @@ function solveWin() {
 }
 
 function solveLose() {
-  header.innerHTML = `<span class='win'>'<span class='answer'>${ref.toUpperCase()}</span>'</span>`;
+  header.classList.add('win');
+  header.innerHTML = `'<span class='answer'>${ref.toUpperCase()}</span>'`;
 }
