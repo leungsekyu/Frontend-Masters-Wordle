@@ -124,10 +124,8 @@ async function fetchWord() {
   try {
     beforeFetchingWord();
     let response = await fetch(fetchWordURL);
-    let responseJSON = await response.json();
+    let { word } = await response.json(); // destructing
     afterFetchingWord();
-    let word = responseJSON.word;
-    console.log(word);
     return word;
   } catch (error) {
     solveFetchWordError();
@@ -245,7 +243,6 @@ function solveNonExist(currLetter, wordCounter) {
   wordCounter[currLetter].position.forEach((currPos) => {
     currLetters[currPos].classList.add('non-exist');
     let correspBtn = document.getElementById(currLetter);
-    console.log(correspBtn);
     correspBtn.classList.add('non-exist');
   });
 }
