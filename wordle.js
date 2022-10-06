@@ -96,9 +96,9 @@ async function validateCurrLine() {
       moveToNextLine();
     }
   } else {
-    fireShaker();
+    setShaker(true);
     setTimeout(() => {
-      stopShaker();
+      setShaker(false);
     }, 1000);
   }
 }
@@ -122,10 +122,10 @@ function isLetter(letter) {
 
 async function fetchWord() {
   try {
-    beforeFetchingWord();
+    setBouncer(true);
     let response = await fetch(fetchWordURL);
     let { word } = await response.json(); // destructing
-    afterFetchingWord();
+    setBouncer(false);
     return word;
   } catch (error) {
     solveFetchWordError();
@@ -251,38 +251,26 @@ function solveNonExist(currLetter, wordCounter) {
 // spinner
 function beforeValidatingCurrWord() {
   currLetters.forEach((currLetter) => {
-    addSpinner(currLetter);
+    setSpinner(currLetter, true);
   });
 }
 
 function afterValidatingCurrWord() {
   currLetters.forEach((currLetter) => {
-    removeSpinner(currLetter);
+    setSpinner(currLetter, false);
   });
 }
 
-function beforeFetchingWord() {
-  loadingIndicator.classList.add('bounce');
+function setBouncer(isBouncing) {
+  loadingIndicator.classList.toggle('bounce', isBouncing);
 }
 
-function afterFetchingWord() {
-  loadingIndicator.classList.remove('bounce');
+function setSpinner(elem, isSpinning) {
+  elem.classList.toggle('spin', isSpinning);
 }
 
-function addSpinner(elem) {
-  elem.classList.add('spin');
-}
-
-function removeSpinner(elem) {
-  elem.classList.remove('spin');
-}
-
-function fireShaker() {
-  currLine.classList.add('shake');
-}
-
-function stopShaker() {
-  currLine.classList.remove('shake');
+function setShaker(isShaking) {
+  currLine.classList.toggle('shake', isShaking);
 }
 
 // result
