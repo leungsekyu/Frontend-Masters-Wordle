@@ -184,9 +184,9 @@ function renderCurrLine() {
     let refLetter = ref[i];
     if (currLetter === refLetter) {
       refCounter[currLetter]--; // very vital
-      currLetters[i].classList.add('exact');
+      currLetters[i].classList.add('correct');
       let correspBtn = document.getElementById(currLetter);
-      correspBtn.classList.add('exact');
+      correspBtn.classList.add('correct');
     }
   }
 
@@ -198,13 +198,13 @@ function renderCurrLine() {
     } else {
       if (refCounter[currLetter] && refCounter[currLetter] > 0) {
         refCounter[currLetter]--; // very vital
-        currLetters[i].classList.add('exist');
+        currLetters[i].classList.add('close');
         let correspBtn = document.getElementById(currLetter);
-        correspBtn.classList.add('exist');
+        correspBtn.classList.add('close');
       } else {
-        currLetters[i].classList.add('non-exist');
+        currLetters[i].classList.add('wrong');
         let correspBtn = document.getElementById(currLetter);
-        correspBtn.classList.add('non-exist');
+        correspBtn.classList.add('wrong');
       }
     }
   }
