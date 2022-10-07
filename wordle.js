@@ -123,8 +123,8 @@ async function fetchWord() {
     setBouncer(true);
     let response = await fetch(fetchWordURL);
     let { word } = await response.json(); // destructing
-    isFetching = false;
     setBouncer(false);
+    isFetching = false;
     return word;
   } catch (error) {
     solveFetchWordError();
