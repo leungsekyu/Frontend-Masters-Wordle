@@ -15,7 +15,7 @@ let fetchWordURL = 'https://words.dev-apis.com/word-of-the-day';
 let validateWordURL = ' https://words.dev-apis.com/validate-word';
 
 let isFetching = true;
-let isWin = false;
+let isFinished = false;
 
 init();
 
@@ -27,7 +27,7 @@ async function init() {
 
 /* event handler */
 function solveKeydown(event) {
-  if (isFetching || isWin) {
+  if (isFetching || isFinished) {
     return;
   }
   let keyVal = event.key;
@@ -35,7 +35,7 @@ function solveKeydown(event) {
 }
 
 function solveClick(event) {
-  if (isFetching || isWin) {
+  if (isFetching || isFinished) {
     return;
   }
   if (event.target.tagName === 'BUTTON') {
@@ -90,8 +90,7 @@ async function validateCurrLine() {
     if (currWord === ref) {
       isWin = true;
       solveWin();
-    }
-    if (!isWin) {
+    } else {
       moveToNextLine();
       currWord = '';
     }
@@ -238,10 +237,12 @@ function setShaker(isShaking) {
 
 // result
 function solveWin() {
+  isFinished = true;
   header.innerText = '🎊';
 }
 
 function solveLose() {
+  isFinished = true;
   header.classList.add('win');
   header.innerHTML = `'<span class='answer'>${ref.toUpperCase()}</span>'`;
 }
