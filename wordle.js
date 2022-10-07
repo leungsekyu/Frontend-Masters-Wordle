@@ -14,7 +14,7 @@ let ref = '';
 let fetchWordURL = 'https://words.dev-apis.com/word-of-the-day';
 let validateWordURL = ' https://words.dev-apis.com/validate-word';
 
-let isFetching = true;
+let isLoading = true;
 let isFinished = false;
 
 init();
@@ -27,7 +27,7 @@ async function init() {
 
 /* event handler */
 function solveKeydown(event) {
-  if (isFetching || isFinished) {
+  if (isLoading || isFinished) {
     return;
   }
   let keyVal = event.key;
@@ -35,7 +35,7 @@ function solveKeydown(event) {
 }
 
 function solveClick(event) {
-  if (isFetching || isFinished) {
+  if (isLoading || isFinished) {
     return;
   }
   if (event.target.tagName === 'BUTTON') {
@@ -82,17 +82,17 @@ async function solveEnter() {
 
 /* validation */
 async function validateCurrLine() {
+  isLoading = true;
   beforeValidatingCurrWord();
   let isValid = await validateCurrWord();
   afterValidatingCurrWord();
+  isLoading = false;
   if (isValid) {
     renderCurrLine();
     if (currWord === ref) {
-      isWin = true;
       solveWin();
     } else {
       moveToNextLine();
-      currWord = '';
     }
   } else {
     setShaker(true);
@@ -107,6 +107,7 @@ function moveToNextLine() {
   if (lineIdx < LINE_QUANTITY) {
     currLine = document.querySelectorAll('.line')[lineIdx];
     currLetters = Array.from(currLine.children);
+    currWord = '';
   } else {
     solveLose();
   }
@@ -123,7 +124,7 @@ async function fetchWord() {
     let response = await fetch(fetchWordURL);
     let { word } = await response.json(); // destructing
     setBouncer(false);
-    isFetching = false;
+    isLoading = false;
     return word;
   } catch (error) {
     solveFetchWordError();
@@ -156,9 +157,8 @@ async function validateCurrWord() {
     method: 'POST',
     body: JSON.stringify({ word: currWord }),
   });
-  let responseJSON = await response.json();
-  let isValid = responseJSON.validWord;
-  return isValid;
+  let { validWord } = await response.json();
+  return validWord;
 }
 
 function countLetters(word) {
