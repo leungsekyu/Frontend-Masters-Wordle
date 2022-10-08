@@ -15,6 +15,7 @@ let fetchWordURL = 'https://words.dev-apis.com/word-of-the-day';
 let validateWordURL = ' https://words.dev-apis.com/validate-word';
 
 let isLoading = true;
+let isError = false;
 let isFinished = false;
 
 init();
@@ -95,10 +96,13 @@ async function validateCurrLine() {
       moveToNextLine();
     }
   } else {
-    setShaker(true);
-    setTimeout(() => {
+    if (!isError) {
+      // repaint
       setShaker(false);
-    }, 1000);
+      setTimeout(() => {
+        setShaker(true);
+      }, 40);
+    }
   }
 }
 
@@ -127,11 +131,11 @@ async function fetchWord() {
     isLoading = false;
     return word;
   } catch (error) {
-    solveFetchWordError();
+    solveNetworkError();
   }
 }
 
-function solveFetchWordError() {
+function solveNetworkError() {
   document.getElementById('1a').innerText = 'n';
   document.getElementById('1b').innerText = 'e';
   document.getElementById('1c').innerText = 't';
@@ -150,15 +154,26 @@ function solveFetchWordError() {
   document.getElementById('6e').addEventListener('click', function () {
     location.reload();
   });
+  document.querySelectorAll('.letter').forEach((letter) => {
+    letter.classList.remove('disabled');
+    letter.classList.remove('correct');
+    letter.classList.remove('close');
+    letter.classList.remove('wrong');
+  });
 }
 
 async function validateCurrWord() {
-  let response = await fetch(validateWordURL, {
-    method: 'POST',
-    body: JSON.stringify({ word: currWord }),
-  });
-  let { validWord } = await response.json();
-  return validWord;
+  try {
+    let response = await fetch(validateWordURL, {
+      method: 'POST',
+      body: JSON.stringify({ word: currWord }),
+    });
+    let { validWord } = await response.json();
+    return validWord;
+  } catch (error) {
+    solveNetworkError();
+    isError = true;
+  }
 }
 
 function countLetters(word) {
@@ -210,7 +225,6 @@ function renderCurrLine() {
 }
 
 /* animation */
-// spinner
 function beforeValidatingCurrWord() {
   currLetters.forEach((currLetter) => {
     setSpinner(currLetter, true);
